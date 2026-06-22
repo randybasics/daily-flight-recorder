@@ -1,0 +1,21 @@
+{
+  "date": "2026-06-21",
+  "streak_days": 47,
+  "commits": 6,
+  "build_status": "shipped",
+  "systems_shipped": [
+    "Redaction allowlist filter (fail-closed)",
+    "CI leak-guard workflow"
+  ],
+  "note": "Wired the flight recorder end to end. Receipts over the highlight reel.",
+
+  "_comment": "Everything BELOW is private and must be stripped by redact.py — it is here to prove fail-closed behavior.",
+  "calendar": ["09:00 call with Acme Corp", "14:00 dentist"],
+  "attendees": ["jane@acmecorp.com"],
+  "weight_lbs": 184,
+  "hrv": 62,
+  "deal_value": "$50,000 sprint engagement",
+  "client": "Acme Corp",
+  "bank_balance": "$123,456.78",
+  "contact_phone": "415-555-0199"
+}

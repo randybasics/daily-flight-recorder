@@ -1,0 +1,40 @@
+name: leak-guard
+
+# Defense in depth: on every push or PR that touches the published logs, re-scan
+# them for private data. The redaction filter runs upstream on the private machine;
+# this guard makes sure nothing private ever survives in the public repo, even if a
+# value slipped through the filter or was added by hand.
+
+on:
+  push:
+    paths:
+      - "log/**"
+      - "redact.py"
+      - ".github/workflows/leak-guard.yml"
+  pull_request:
+    paths:
+      - "log/**"
+      - "redact.py"
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run leak guard over published logs
+        run: python3 redact.py --check log/
+      - name: Self-test the filter on the example snapshot
+        run: |
+          python3 redact.py examples/snapshot-input.example.json --stdout > /tmp/out.md
+          # the example carries private fields; the filter must strip every one of them
+          if grep -qiE "acme|jane@|\\$50,000|123,456|415-555|weight|hrv|dentist" /tmp/out.md; then
+            echo "::error::filter leaked a private field from the example snapshot"
+            cat /tmp/out.md
+            exit 1
+          fi
+          echo "filter self-test passed"
