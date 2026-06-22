@@ -52,8 +52,15 @@ git push
 
 (Replace `<your-id>` with your GitHub numeric user id so the no-reply address is valid.)
 
-Automate it with cron or launchd that runs steps 1–2 each morning. The job should use a
-**fine-grained token scoped to this single repo** — never a personal admin token.
+Automate it with cron or launchd that runs steps 1–2 each morning. For the push, use the
+**most narrowly-scoped credential possible** — never a personal admin token:
+
+- **Best:** a per-repo **deploy key with write access** (Settings → Deploy keys). Its blast
+  radius is this one public repo, not the whole account. Generate a dedicated keypair, add the
+  public half as a write deploy key, and point the repo's remote at it over SSH.
+- **Acceptable:** a fine-grained PAT scoped to this single repo's contents.
+
+Either way the unattended credential can write to exactly one repo and nothing else.
 
 ## 3. CI re-scans every push
 
